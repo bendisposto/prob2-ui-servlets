@@ -19,6 +19,7 @@ import de.prob.animator.command.GetVersionCommand;
 import de.prob.cli.CliVersionNumber;
 import de.prob.cli.ProBInstanceProvider;
 import de.prob.scripting.Downloader;
+import de.prob.servlet.Main;
 
 @SuppressWarnings("serial")
 @Singleton
@@ -52,7 +53,7 @@ public class VersionServlet extends HttpServlet {
 
 		if (binaryPresent && installed == null) {
 			GetVersionCommand versionCommand = new GetVersionCommand();
-			IAnimator animator = de.prob.Main.getInjector()
+			IAnimator animator = Main.getInjector()
 					.getInstance(IAnimator.class);
 			animator.execute(versionCommand);
 			installed = versionCommand.getVersion();

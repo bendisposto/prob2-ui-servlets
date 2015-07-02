@@ -254,7 +254,7 @@ public class ReflectionServlet extends HttpServlet {
 					return iSession;
 				}
 
-				obj = de.prob.Main.getInjector().getInstance(clazz);
+				obj = Main.getInjector().getInstance(clazz);
 				instanceCache.get(clazz).put(key, obj);
 
 				if (Main.multianimation
@@ -264,7 +264,7 @@ public class ReflectionServlet extends HttpServlet {
 					.setAnimationOfInterest(uuid);
 				}
 			} else {
-				obj = de.prob.Main.getInjector().getInstance(clazz);
+				obj = Main.getInjector().getInstance(clazz);
 			}
 
 		}
