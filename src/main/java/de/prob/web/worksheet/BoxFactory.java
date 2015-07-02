@@ -2,7 +2,6 @@ package de.prob.web.worksheet;
 
 import com.google.inject.Singleton;
 
-import de.prob.Main;
 import de.prob.web.views.Worksheet;
 
 @Singleton
@@ -23,7 +22,7 @@ public class BoxFactory {
 		IBox box = null;
 		try {
 			clazz = (Class<IBox>) Class.forName(className);
-			box = Main.getInjector().getInstance(clazz);
+			box = de.prob.Main.getInjector().getInstance(clazz);
 			box.setId(id);
 			box.setOwner(owner);
 		} catch (Exception e) {

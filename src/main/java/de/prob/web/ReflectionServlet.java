@@ -33,9 +33,9 @@ import com.google.common.cache.RemovalNotification;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import de.prob.Main;
 import de.prob.annotations.OneToOne;
 import de.prob.annotations.PublicSession;
+import de.prob.servlet.Main;
 import de.prob.statespace.AnimationSelector;
 import de.prob.statespace.IAnimationChangeListener;
 import de.prob.statespace.IModelChangedListener;
@@ -50,7 +50,7 @@ public class ReflectionServlet extends HttpServlet {
 	Logger logger = LoggerFactory.getLogger(ReflectionServlet.class);
 
 	private class RemoveSessionListener implements
-			RemovalListener<String, ISession> {
+	RemovalListener<String, ISession> {
 
 		@Override
 		public void onRemoval(
@@ -59,11 +59,11 @@ public class ReflectionServlet extends HttpServlet {
 			if (session != null) {
 				if (session instanceof IAnimationChangeListener) {
 					animations
-							.deregisterAnimationChangeListener((IAnimationChangeListener) session);
+					.deregisterAnimationChangeListener((IAnimationChangeListener) session);
 				}
 				if (session instanceof IModelChangedListener) {
 					animations
-							.deregisterModelChangedListeners((IModelChangedListener) session);
+					.deregisterModelChangedListeners((IModelChangedListener) session);
 				}
 			}
 		}
@@ -163,7 +163,7 @@ public class ReflectionServlet extends HttpServlet {
 
 	private void delegateToSession(final HttpServletRequest req,
 			final HttpServletResponse resp, final ISession session)
-			throws IOException {
+					throws IOException {
 		String mode = req.getParameter("mode");
 		Map<String, String[]> parameterMap = req.getParameterMap();
 		if ("update".equals(mode)) {
@@ -254,17 +254,17 @@ public class ReflectionServlet extends HttpServlet {
 					return iSession;
 				}
 
-				obj = Main.getInjector().getInstance(clazz);
+				obj = de.prob.Main.getInjector().getInstance(clazz);
 				instanceCache.get(clazz).put(key, obj);
 
 				if (Main.multianimation
 						&& obj instanceof AbstractAnimationBasedView
 						&& uuid != null) {
 					((AbstractAnimationBasedView) obj)
-							.setAnimationOfInterest(uuid);
+					.setAnimationOfInterest(uuid);
 				}
 			} else {
-				obj = Main.getInjector().getInstance(clazz);
+				obj = de.prob.Main.getInjector().getInstance(clazz);
 			}
 
 		}
