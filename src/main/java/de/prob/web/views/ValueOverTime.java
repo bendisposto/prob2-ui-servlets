@@ -10,7 +10,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.AsyncContext;
 
-import org.parboiled.common.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +23,7 @@ import de.prob.annotations.OneToOne;
 import de.prob.statespace.AnimationSelector;
 import de.prob.statespace.StateSpace;
 import de.prob.statespace.Trace;
+import de.prob.util.Tuple2;
 import de.prob.web.AbstractAnimationBasedView;
 import de.prob.web.WebUtils;
 
@@ -95,11 +95,11 @@ public class ValueOverTime extends AbstractAnimationBasedView {
 							WebUtils.toJson(result),
 							"time",
 							time == null ? "" : time.getCode(),
-							"data",
-							WebUtils.toJson(data),
-							"xLabel",
-							time == null ? "Number of Animation Steps" : time
-									.getCode(), "drawMode", mode);
+									"data",
+									WebUtils.toJson(data),
+									"xLabel",
+									time == null ? "Number of Animation Steps" : time
+											.getCode(), "drawMode", mode);
 
 			submit(wrap);
 		}
@@ -144,11 +144,11 @@ public class ValueOverTime extends AbstractAnimationBasedView {
 				if (timeRes.isEmpty()) {
 					int c = 0;
 					for (Tuple2<String, AbstractEvalResult> it : results) {
-						if (it.b instanceof EvalResult) {
-							String val = ((EvalResult) it.b).getValue();
-							points.add(wrapPoints(it.a, extractValue(val), c,
+						if (it.getSecond() instanceof EvalResult) {
+							String val = ((EvalResult) it.getSecond()).getValue();
+							points.add(wrapPoints(it.getFirst(), extractValue(val), c,
 									extractType(val)));
-							points.add(wrapPoints(it.a, extractValue(val),
+							points.add(wrapPoints(it.getFirst(), extractValue(val),
 									c + 1, extractType(val)));
 						}
 						c++;
@@ -156,16 +156,16 @@ public class ValueOverTime extends AbstractAnimationBasedView {
 				} else if (timeRes.size() == results.size()) {
 					for (Tuple2<String, AbstractEvalResult> it : results) {
 						int index = results.indexOf(it);
-						if (it.b instanceof EvalResult) {
-							String val = ((EvalResult) it.b).getValue();
-							String time = ((EvalResult) timeRes.get(index).b)
+						if (it.getSecond() instanceof EvalResult) {
+							String val = ((EvalResult) it.getSecond()).getValue();
+							String time = ((EvalResult) timeRes.get(index).getSecond())
 									.getValue();
-							String timePlus = ((EvalResult) timeRes.get(index).b)
+							String timePlus = ((EvalResult) timeRes.get(index).getSecond())
 									.getValue();
-							points.add(wrapPoints(it.a, extractValue(val),
+							points.add(wrapPoints(it.getFirst(), extractValue(val),
 									extractValue(time), extractType(val)));
 							if (index < results.size() - 1) {
-								points.add(wrapPoints(it.a, extractValue(val),
+								points.add(wrapPoints(it.getFirst(), extractValue(val),
 										extractValue(timePlus),
 										extractType(val)));
 							}
@@ -369,7 +369,7 @@ public class ValueOverTime extends AbstractAnimationBasedView {
 		return WebUtils.wrap("cmd", "ValueOverTime.formulaRemoved", "id", id,
 				"data", WebUtils.toJson(data), "xLabel",
 				time == null ? "Number of Animation Steps" : time.getCode(),
-				"drawMode", mode);
+						"drawMode", mode);
 	}
 
 	@Override
