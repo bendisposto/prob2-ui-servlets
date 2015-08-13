@@ -3,13 +3,17 @@ apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 
-project.group = 'de.prob2'
+project.group = 'de.hhu.stups'
+project.version = '2.0.2-SNAPSHOT'
+project.archivesBaseName = "prob2-ui-servlets"
+
 sourceCompatibility = 1.6
 def gradle_version = '1.0-rc-3'
 
-project.version = '2.0.1'
 
 repositories {
+	mavenCentral()
+
 	maven {
 		name "cobra"
 		url "http://cobra.cs.uni-duesseldorf.de/artifactory/repo"
@@ -60,4 +64,73 @@ dependencies {
 task deploy(type: Copy, dependsOn: build) {
     into "$buildDir/libs"
     from configurations.runtime
+}
+
+if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+
+apply plugin: 'signing'
+
+signing {
+    sign configurations.archives
+}
+
+task javadocJar(type: Jar) {
+	 classifier = 'javadoc'
+	 from javadoc
+}
+
+task sourcesJar(type: Jar) {
+	 classifier = 'sources'
+	 from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      pom.project {
+        name 'ProB 2.0 Servlets'
+        packaging 'jar'
+        // optionally artifactId can be defined here
+        description 'Servlets for ProB 2.0. This will be replaced by a new mechanism.'
+        url 'https://github.com/bendisposto/prob2-ui-servlets'
+
+        licenses {
+          license {
+            name 'Eclipse Public License, Version 1.0'
+            url 'https://www.eclipse.org/legal/epl-v10.html'
+          }
+        }
+
+        scm {
+          connection 'scm:git:git://github.com/bendisposto/prob2-ui-servlets.git'
+          developerConnection 'scm:git:git@github.com:bendisposto/prob2-ui-servlets.git'
+          url 'https://github.com/bendisposto/prob2-ui-servlets'
+        }
+
+
+        developers {
+          developer {
+            id 'bendisposto'
+            name 'Jens Bendisposto'
+            email 'jens@bendisposto.de'
+          }
+        }
+      }
+    }
+  }
+}
 }
