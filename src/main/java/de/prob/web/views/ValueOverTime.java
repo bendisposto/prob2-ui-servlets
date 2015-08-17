@@ -19,7 +19,6 @@ import de.prob.animator.domainobjects.AbstractEvalResult;
 import de.prob.animator.domainobjects.ComputationNotCompletedResult;
 import de.prob.animator.domainobjects.EvalResult;
 import de.prob.animator.domainobjects.IEvalElement;
-import de.prob.annotations.OneToOne;
 import de.prob.statespace.AnimationSelector;
 import de.prob.statespace.StateSpace;
 import de.prob.statespace.Trace;
@@ -27,7 +26,6 @@ import de.prob.util.Tuple2;
 import de.prob.web.AbstractAnimationBasedView;
 import de.prob.web.WebUtils;
 
-@OneToOne
 public class ValueOverTime extends AbstractAnimationBasedView {
 
 	private class FormulaElement {
@@ -95,11 +93,11 @@ public class ValueOverTime extends AbstractAnimationBasedView {
 							WebUtils.toJson(result),
 							"time",
 							time == null ? "" : time.getCode(),
-									"data",
-									WebUtils.toJson(data),
-									"xLabel",
-									time == null ? "Number of Animation Steps" : time
-											.getCode(), "drawMode", mode);
+							"data",
+							WebUtils.toJson(data),
+							"xLabel",
+							time == null ? "Number of Animation Steps" : time
+									.getCode(), "drawMode", mode);
 
 			submit(wrap);
 		}
@@ -145,11 +143,12 @@ public class ValueOverTime extends AbstractAnimationBasedView {
 					int c = 0;
 					for (Tuple2<String, AbstractEvalResult> it : results) {
 						if (it.getSecond() instanceof EvalResult) {
-							String val = ((EvalResult) it.getSecond()).getValue();
-							points.add(wrapPoints(it.getFirst(), extractValue(val), c,
-									extractType(val)));
-							points.add(wrapPoints(it.getFirst(), extractValue(val),
-									c + 1, extractType(val)));
+							String val = ((EvalResult) it.getSecond())
+									.getValue();
+							points.add(wrapPoints(it.getFirst(),
+									extractValue(val), c, extractType(val)));
+							points.add(wrapPoints(it.getFirst(),
+									extractValue(val), c + 1, extractType(val)));
 						}
 						c++;
 					}
@@ -157,15 +156,18 @@ public class ValueOverTime extends AbstractAnimationBasedView {
 					for (Tuple2<String, AbstractEvalResult> it : results) {
 						int index = results.indexOf(it);
 						if (it.getSecond() instanceof EvalResult) {
-							String val = ((EvalResult) it.getSecond()).getValue();
-							String time = ((EvalResult) timeRes.get(index).getSecond())
+							String val = ((EvalResult) it.getSecond())
 									.getValue();
-							String timePlus = ((EvalResult) timeRes.get(index).getSecond())
-									.getValue();
-							points.add(wrapPoints(it.getFirst(), extractValue(val),
-									extractValue(time), extractType(val)));
+							String time = ((EvalResult) timeRes.get(index)
+									.getSecond()).getValue();
+							String timePlus = ((EvalResult) timeRes.get(index)
+									.getSecond()).getValue();
+							points.add(wrapPoints(it.getFirst(),
+									extractValue(val), extractValue(time),
+									extractType(val)));
 							if (index < results.size() - 1) {
-								points.add(wrapPoints(it.getFirst(), extractValue(val),
+								points.add(wrapPoints(it.getFirst(),
+										extractValue(val),
 										extractValue(timePlus),
 										extractType(val)));
 							}
@@ -369,7 +371,7 @@ public class ValueOverTime extends AbstractAnimationBasedView {
 		return WebUtils.wrap("cmd", "ValueOverTime.formulaRemoved", "id", id,
 				"data", WebUtils.toJson(data), "xLabel",
 				time == null ? "Number of Animation Steps" : time.getCode(),
-						"drawMode", mode);
+				"drawMode", mode);
 	}
 
 	@Override
