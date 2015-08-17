@@ -12,7 +12,9 @@ import org.eclipse.jetty.util.ajax.JSON;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
+import de.be4.classicalb.core.parser.ClassicalBParser;
 import de.prob.animator.domainobjects.EventB;
+import de.prob.animator.domainobjects.EventBParserBase;
 import de.prob.animator.domainobjects.IEvalElement;
 import de.prob.animator.domainobjects.LTL;
 import de.prob.annotations.OneToOne;
@@ -29,9 +31,12 @@ import de.prob.check.ModelChecker;
 import de.prob.check.ModelCheckingOptions;
 import de.prob.check.ModelCheckingOptions.Options;
 import de.prob.check.StateSpaceStats;
+import de.prob.model.classicalb.ClassicalBModel;
+import de.prob.model.eventb.EventBModel;
 import de.prob.model.representation.AbstractElement;
 import de.prob.model.representation.BEvent;
 import de.prob.model.representation.ModelElementList;
+import de.prob.parserbase.ProBParserBase;
 import de.prob.statespace.AnimationSelector;
 import de.prob.statespace.FormalismType;
 import de.prob.statespace.IModelChangedListener;
@@ -44,7 +49,7 @@ import de.prob.web.WebUtils;
 @PublicSession
 @OneToOne
 public class ModelCheckingUI extends AbstractAnimationBasedView implements
-IModelChangedListener, IModelCheckListener {
+		IModelChangedListener, IModelCheckListener {
 
 	private ModelCheckingOptions options;
 
@@ -298,9 +303,9 @@ IModelChangedListener, IModelCheckListener {
 		Trace ofInterest = animationOfInterest == null ? animationsRegistry
 				.getCurrentTrace() : animationsRegistry
 				.getTrace(animationOfInterest);
-				if (ofInterest != null) {
-					modelChanged(ofInterest.getStateSpace());
-				}
+		if (ofInterest != null) {
+			modelChanged(ofInterest.getStateSpace());
+		}
 	}
 
 	@Override
@@ -328,7 +333,7 @@ IModelChangedListener, IModelCheckListener {
 
 			boolean b_model = currentStateSpace == null ? false
 					: currentStateSpace.getModel().getFormalismType()
-					.equals(FormalismType.B);
+							.equals(FormalismType.B);
 			List<String> eventNames = b_model ? extractEventNames(currentStateSpace)
 					: new ArrayList<String>();
 			selectedEvents = new ArrayList<String>();
@@ -389,12 +394,25 @@ IModelChangedListener, IModelCheckListener {
 
 	public Object parseLTL(final String formula, final String id) {
 		try {
-			ltlFormula = new LTL(formula);
+			ltlFormula = new LTL(formula, getLtlLangPart());
 			return WebUtils.wrap("cmd", "ModelChecking.parseOk", "id", id);
 		} catch (Exception e) {
 			ltlFormula = null;
 			return WebUtils.wrap("cmd", "ModelChecking.parseError", "id", id);
 		}
+	}
+
+	private ProBParserBase getLtlLangPart() {
+		if (currentStateSpace != null
+				&& currentStateSpace.getModel() instanceof EventBModel) {
+			return new EventBParserBase();
+		}
+		if (currentStateSpace != null
+				&& currentStateSpace.getModel() instanceof ClassicalBModel) {
+			return new ClassicalBParser();
+		}
+		throw new IllegalArgumentException(
+				"An Event-B or Classical-B model must be animated to parse an LTL formula");
 	}
 
 	@Override
