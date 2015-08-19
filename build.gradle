@@ -17,6 +17,10 @@ repositories {
       name "snapshots"
       url "https://oss.sonatype.org/content/repositories/snapshots/"
     }
+    maven {
+      name "cobra"
+      url "http://cobra.cs.uni-duesseldorf.de/artifactory/repo"
+    }
 }
 
 
