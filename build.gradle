@@ -12,12 +12,11 @@ def gradle_version = '1.0-rc-3'
 
 
 repositories {
-	mavenCentral()
-
-	maven {
-		name "cobra"
-		url "http://cobra.cs.uni-duesseldorf.de/artifactory/repo"
-	}
+    mavenCentral()
+    maven {
+      name "snapshots"
+      url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
 }
 
 
@@ -31,7 +30,7 @@ sourceSets.main.groovy.srcDir 'src/main/java' // ie include the 'java' dir as gr
 def kernel_version = "2.0.0-SNAPSHOT"
 
 dependencies {
-  compile group: "de.prob2", name: "de.prob2.kernel", version: kernel_version
+  compile group: "de.hhu.stups", name: "de.prob2.kernel", version: kernel_version
 
   compile 'commons-cli:commons-cli:1.2' // Apache Licence 2.0
 
