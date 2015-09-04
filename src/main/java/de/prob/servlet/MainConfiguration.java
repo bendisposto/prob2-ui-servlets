@@ -40,7 +40,7 @@ public class MainConfiguration extends AbstractModule {
 		bind(String.class).annotatedWith(Version.class).toInstance(
 				buildConstants.getProperty("version", "0.0.0"));
 		bind(ClassLoader.class).annotatedWith(Names.named("Classloader"))
-		.toInstance(Main.class.getClassLoader());
+				.toInstance(Main.class.getClassLoader());
 		bind(PegDownProcessor.class);
 
 		// TODO: Should this property be set here? Should it be set at all?
@@ -101,7 +101,7 @@ public class MainConfiguration extends AbstractModule {
 				.hasArg()
 				.withDescription(
 						"set the cache size for the states in the StateSpace")
-						.create("maxCacheSize");
+				.create("maxCacheSize");
 
 		Option browser = OptionBuilder.withArgName("url").hasArg()
 				.withDescription("Open URL in browser").create("browser");
@@ -114,7 +114,14 @@ public class MainConfiguration extends AbstractModule {
 				.withArgName("version")
 				.withDescription(
 						"upgrade the ProB binaries. Optionally specify the desired version.")
-						.create("upgrade");
+				.create("upgrade");
+
+		Option upgrade2 = OptionBuilder
+				.hasOptionalArg()
+				.withArgName("version")
+				.withDescription(
+						"upgrade the ProB binaries before starting the shell. Optionally specify the desired version.")
+				.create("cli");
 
 		// TODO: add modelchecking option
 		// Option modelcheck = new Option("mc", "modelcheck", false,
@@ -123,12 +130,13 @@ public class MainConfiguration extends AbstractModule {
 		mode.setRequired(true);
 		// mode.addOption(modelcheck);
 		mode.addOption(shell);
+		mode.addOption(upgrade);
 		options.addOptionGroup(mode);
 		options.addOption(browser);
 		options.addOption(port);
 		options.addOption(restricted);
 		options.addOption(standalone);
-		options.addOption(upgrade);
+		options.addOption(upgrade2);
 		options.addOption(animation);
 		options.addOption(maxCacheSize);
 		return options;

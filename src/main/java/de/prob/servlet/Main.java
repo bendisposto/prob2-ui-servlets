@@ -76,7 +76,7 @@ public class Main {
 	 */
 	public final static String LOG_CONFIG = System
 			.getProperty("PROB_LOG_CONFIG") == null ? "production.xml" : System
-					.getProperty("PROB_LOG_CONFIG");
+			.getProperty("PROB_LOG_CONFIG");
 
 	private final Downloader downloader;
 
@@ -90,7 +90,8 @@ public class Main {
 	 * @param log
 	 */
 	@Inject
-	public Main(final CommandLineParser parser, final Options options, final Downloader downloader) {
+	public Main(final CommandLineParser parser, final Options options,
+			final Downloader downloader) {
 		this.parser = parser;
 		this.options = options;
 		this.downloader = downloader;
@@ -103,8 +104,9 @@ public class Main {
 		String iface = "0.0.0.0";
 		try {
 			CommandLine line = parser.parse(options, args);
-			if (line.hasOption("upgrade")) {
-				String version = line.getOptionValue("upgrade");
+			if (line.hasOption("upgrade") || line.hasOption("cli")) {
+				String version = line.hasOption("upgrade") ? line
+						.getOptionValue("upgrade") : line.getOptionValue("cli");
 				if (version == null) {
 					version = "latest";
 				}
@@ -184,7 +186,7 @@ public class Main {
 			return homedir + separator;
 		}
 		return System.getProperty("user.home") + separator + ".prob"
-		+ separator;
+				+ separator;
 	}
 
 	public static Map<String, String> getGlobalPreferences(
