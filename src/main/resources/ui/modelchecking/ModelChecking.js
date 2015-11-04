@@ -87,8 +87,6 @@ ModelChecking = (function() {
         data.hasNodeStats = data.nodeStats.length > 0
         data.transStats = JSON.parse(data.transStats)
         data.hasTransStats = data.transStats.length > 0
-        data.uncovered = JSON.parse(data.uncovered)
-        data.hasUncovered = data.uncovered.length > 0
         console.log(data)
         $("#"+id+"-in").replaceWith(session.render("/ui/modelchecking/finished.html", data))
         if(data.hasTrace) {

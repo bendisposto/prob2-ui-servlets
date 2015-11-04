@@ -32,14 +32,6 @@
         </tbody>
       </table>
     {{/hasTransStats}}
-    {{#hasUncovered}}
-      <h4 class="text-center">Uncovered Transitions</h4>
-      <ul>
-      {{#uncovered}}
-      <li>{{name}}</li>
-      {{/uncovered}}
-      </ul>
-    {{/hasUncovered}}
     {{#hasTrace}}
         <div class="trace-button">
             <button id="{{id}}-opentrace" type="button" class="btn btn-default">Open trace to error state</button>
