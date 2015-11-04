@@ -13,6 +13,7 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 
 import de.be4.classicalb.core.parser.ClassicalBParser;
+import de.prob.animator.command.ComputeCoverageCommand.ComputeCoverageResult;
 import de.prob.animator.domainobjects.EventB;
 import de.prob.animator.domainobjects.EventBParserBase;
 import de.prob.animator.domainobjects.IEvalElement;
@@ -49,7 +50,7 @@ import de.prob.web.WebUtils;
 @PublicSession
 @OneToOne
 public class ModelCheckingUI extends AbstractAnimationBasedView implements
-		IModelChangedListener, IModelCheckListener {
+IModelChangedListener, IModelCheckListener {
 
 	private ModelCheckingOptions options;
 
@@ -111,23 +112,55 @@ public class ModelCheckingUI extends AbstractAnimationBasedView implements
 				: result instanceof ITraceDescription ? "danger" : "warning";
 		boolean hasTrace = result instanceof ITraceDescription;
 
+		ModelChecker modelChecker = jobs.get(id);
+		ComputeCoverageResult coverage = null;
+		if (modelChecker != null) {
+			coverage = modelChecker.getCoverage();
+		}
+
 		jobs.remove(id);
-		boolean hasStats = stats != null;
-		if (hasStats) {
+		if (coverage != null) {
+			Number numNodes = coverage.getTotalNumberOfNodes();
+			Number numTrans = coverage.getTotalNumberOfTransitions();
+
+			String nodeStats = WebUtils.toJson(extractNodeStats(coverage
+					.getNodes()));
+			String transitionStats = WebUtils.toJson(extractNodeStats(coverage
+					.getOps()));
+			String uncovered = WebUtils.toJson(extractNodeStats(coverage
+					.getUncovered()));
+
 			submit(WebUtils.wrap("cmd", "ModelChecking.finishJob", "id", id,
-					"time", timeElapsed, "stats", hasStats, "processedNodes",
-					stats.getNrProcessedNodes(), "totalNodes",
-					stats.getNrTotalNodes(), "totalTransitions",
-					stats.getNrTotalTransitions(), "result", res, "hasTrace",
-					hasTrace, "message", result.getMessage()));
+					"time", timeElapsed, "stats", true, "processedNodes",
+					numNodes, "totalNodes", numNodes, "totalTransitions",
+					numTrans, "result", res, "hasTrace", hasTrace, "message",
+					result.getMessage(), "nodeStats", nodeStats, "transStats",
+					transitionStats, "uncovered", uncovered));
 		} else {
 			Map<String, String> wrap = WebUtils.wrap("cmd",
 					"ModelChecking.finishJob", "id", id, "time", timeElapsed,
-					"stats", hasStats, "result", res, "hasTrace", hasTrace,
+					"stats", false, "result", res, "hasTrace", hasTrace,
 					"message", result.getMessage());
 			submit(wrap);
 		}
 
+	}
+
+	private List<Map<String, String>> extractNodeStats(List<String> stats) {
+		List<Map<String, String>> extracted = new ArrayList<Map<String, String>>();
+		for (String stat : stats) {
+			String woPre = stat.startsWith("'") ? stat.substring(1) : stat;
+			String woSuf = woPre.endsWith("'") ? woPre.substring(0,
+					woPre.length() - 1) : woPre;
+			String[] split = woSuf.split(":");
+			if (split.length == 2) {
+				extracted.add(WebUtils
+						.wrap("name", split[0], "value", split[1]));
+			} else if (split.length == 1) {
+				extracted.add(WebUtils.wrap("name", split[0]));
+			}
+		}
+		return extracted;
 	}
 
 	public Object startJob(final Map<String, String[]> params) {
@@ -303,9 +336,9 @@ public class ModelCheckingUI extends AbstractAnimationBasedView implements
 		Trace ofInterest = animationOfInterest == null ? animationsRegistry
 				.getCurrentTrace() : animationsRegistry
 				.getTrace(animationOfInterest);
-		if (ofInterest != null) {
-			modelChanged(ofInterest.getStateSpace());
-		}
+				if (ofInterest != null) {
+					modelChanged(ofInterest.getStateSpace());
+				}
 	}
 
 	@Override
@@ -333,7 +366,7 @@ public class ModelCheckingUI extends AbstractAnimationBasedView implements
 
 			boolean b_model = currentStateSpace == null ? false
 					: currentStateSpace.getModel().getFormalismType()
-							.equals(FormalismType.B);
+					.equals(FormalismType.B);
 			List<String> eventNames = b_model ? extractEventNames(currentStateSpace)
 					: new ArrayList<String>();
 			selectedEvents = new ArrayList<String>();

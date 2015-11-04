@@ -82,6 +82,14 @@ ModelChecking = (function() {
     function finishJob(id, data) {
         data.hasTrace = data.hasTrace === "true"
         data.stats = data.stats === "true"
+        console.log(data)
+        data.nodeStats = JSON.parse(data.nodeStats)
+        data.hasNodeStats = data.nodeStats.length > 0
+        data.transStats = JSON.parse(data.transStats)
+        data.hasTransStats = data.transStats.length > 0
+        data.uncovered = JSON.parse(data.uncovered)
+        data.hasUncovered = data.uncovered.length > 0
+        console.log(data)
         $("#"+id+"-in").replaceWith(session.render("/ui/modelchecking/finished.html", data))
         if(data.hasTrace) {
             $("#"+id+"-opentrace").click(function(e) {
@@ -100,7 +108,7 @@ ModelChecking = (function() {
             $("#"+id+"-status").replaceWith("<span id='"+id+"-status' class='not-complete glyphicon glyphicon-minus'></span>")
         }
     }
-    
+
     function changeStateSpaces(ssId, events, bType) {
         $(".job").addClass("invisible")
         $(".result").addClass("invisible")

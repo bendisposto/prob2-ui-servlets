@@ -10,9 +10,39 @@
         <div>Total Transitions: {{totalTransitions}}</div>
         {{/stats}}
     </div>
+    {{#hasNodeStats}}
+      <table class="table">
+        <caption><h4>Node Stats</h4></caption>
+        <thead><tr><th>Status</th><th># of Nodes</th></thead>
+        <tbody>
+        {{#nodeStats}}
+        <tr><td>{{name}}</td><td>{{value}}</td><tr>
+        {{/nodeStats}}
+        </tbody>
+      </table>
+    {{/hasNodeStats}}
+    {{#hasTransStats}}
+      <table class="table">
+        <caption><h4>Transitions Stats</h4></caption>
+        <thead><tr><th>Transition Name</th><th># of Transitions</th></thead>
+        <tbody>
+        {{#transStats}}
+        <tr><td>{{name}}</td><td>{{value}}</td><tr>
+        {{/transStats}}
+        </tbody>
+      </table>
+    {{/hasTransStats}}
+    {{#hasUncovered}}
+      <h4 class="text-center">Uncovered Transitions</h4>
+      <ul>
+      {{#uncovered}}
+      <li>{{name}}</li>
+      {{/uncovered}}
+      </ul>
+    {{/hasUncovered}}
     {{#hasTrace}}
         <div class="trace-button">
             <button id="{{id}}-opentrace" type="button" class="btn btn-default">Open trace to error state</button>
         </div>
     {{/hasTrace}}
-</div>  
+</div>
