@@ -10,7 +10,9 @@ import org.apache.commons.lang.StringEscapeUtils;
 import com.google.inject.Inject;
 
 import de.prob.animator.command.EvaluationCommand;
+import de.prob.animator.domainobjects.AbstractEvalResult;
 import de.prob.animator.domainobjects.ClassicalB;
+import de.prob.animator.domainobjects.EvalResult;
 import de.prob.animator.domainobjects.EvaluationException;
 import de.prob.animator.domainobjects.IEvalElement;
 import de.prob.scripting.ClassicalBFactory;
@@ -24,7 +26,7 @@ import de.prob.web.AbstractSession;
 import de.prob.web.WebUtils;
 
 public class BConsole extends AbstractSession implements
-IAnimationChangeListener {
+		IAnimationChangeListener {
 
 	private final StateSpace defaultSS;
 	private String modelName;
@@ -68,7 +70,8 @@ IAnimationChangeListener {
 				defaultSS.execute(cmd);
 				res = cmd.getValue().toString();
 			} else {
-				res = currentTrace.evalCurrent(parsed).toString();
+				AbstractEvalResult result = currentTrace.evalCurrent(parsed);
+				res = result.toString();
 			}
 			return WebUtils.wrap("cmd", "BConsole.result", "result",
 					StringEscapeUtils.escapeHtml(res));
@@ -76,7 +79,13 @@ IAnimationChangeListener {
 			return WebUtils.wrap("cmd", "BConsole.error", "error",
 					"Not correct B syntax");
 		}
+	}
 
+	public String result(AbstractEvalResult res) {
+		if (res instanceof EvalResult) {
+
+		}
+		return res.toString();
 	}
 
 	public IEvalElement parse(final String line) {

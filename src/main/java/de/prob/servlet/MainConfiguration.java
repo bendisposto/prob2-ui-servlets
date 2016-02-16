@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import javax.script.ScriptEngine;
+
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
@@ -23,6 +25,8 @@ import com.google.inject.name.Names;
 import de.prob.annotations.Home;
 import de.prob.annotations.Logfile;
 import de.prob.annotations.Version;
+import de.prob.scripting.GroovySE;
+import de.prob.scripting.ScriptEngineProvider;
 
 public class MainConfiguration extends AbstractModule {
 	private final Properties buildConstants;

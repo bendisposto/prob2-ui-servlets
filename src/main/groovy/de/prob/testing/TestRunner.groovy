@@ -11,6 +11,8 @@ import org.junit.runner.notification.RunListener
 import com.google.inject.Inject
 import com.google.inject.Singleton
 
+import de.prob.scripting.ScriptEngineProvider
+
 @Singleton
 class TestRunner {
 	def ScriptEngine executor
@@ -18,6 +20,7 @@ class TestRunner {
 
 	@Inject
 	def TestRunner(ProBTestListener listener) {
+		this.executor = de.prob.Main.getInjector().getInstance(ScriptEngineProvider.class).get()
 		this.listener = listener
 	}
 
