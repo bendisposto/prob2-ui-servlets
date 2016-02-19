@@ -17,7 +17,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 
-import de.prob.scripting.Downloader;
 import de.prob.scripting.FileHandler;
 import de.prob.webconsole.WebConsole;
 
@@ -78,8 +77,6 @@ public class Main {
 			.getProperty("PROB_LOG_CONFIG") == null ? "production.xml" : System
 			.getProperty("PROB_LOG_CONFIG");
 
-	private final Downloader downloader;
-
 	/**
 	 * Parameters are injected by Guice via {@link MainModule}. This class
 	 * should NOT be instantiated by hand.
@@ -90,11 +87,9 @@ public class Main {
 	 * @param log
 	 */
 	@Inject
-	public Main(final CommandLineParser parser, final Options options,
-			final Downloader downloader) {
+	public Main(final CommandLineParser parser, final Options options) {
 		this.parser = parser;
 		this.options = options;
-		this.downloader = downloader;
 		logger.debug("Java version: {}", System.getProperty("java.version"));
 	}
 
@@ -104,18 +99,6 @@ public class Main {
 		String iface = "0.0.0.0";
 		try {
 			CommandLine line = parser.parse(options, args);
-			if (line.hasOption("upgrade") || line.hasOption("cli")) {
-				String version = line.hasOption("upgrade") ? line
-						.getOptionValue("upgrade") : line.getOptionValue("cli");
-				if (version == null) {
-					version = "latest";
-				}
-				if (version.equals("cspm")) {
-					System.out.println(downloader.installCSPM());
-				} else {
-					System.out.println(downloader.downloadCli(version));
-				}
-			}
 			if (line.hasOption("browser")) {
 				logger.debug("Browser");
 				url = line.getOptionValue("browser");
@@ -181,12 +164,7 @@ public class Main {
 	 *         is appended to it.
 	 */
 	public static String getProBDirectory() {
-		String homedir = System.getProperty("prob.home");
-		if (homedir != null) {
-			return homedir + separator;
-		}
-		return System.getProperty("user.home") + separator + ".prob"
-				+ separator;
+		return de.prob.Main.getProBDirectory();
 	}
 
 	public static Map<String, String> getGlobalPreferences(

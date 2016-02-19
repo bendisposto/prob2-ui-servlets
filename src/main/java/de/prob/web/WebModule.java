@@ -12,7 +12,6 @@ import de.prob.annotations.Sessions;
 import de.prob.webconsole.OutputBuffer;
 import de.prob.webconsole.servlets.GroovyOutputServlet;
 import de.prob.webconsole.servlets.ScrollbackServlet;
-import de.prob.webconsole.servlets.VersionServlet;
 
 public class WebModule extends ServletModule {
 
@@ -20,7 +19,6 @@ public class WebModule extends ServletModule {
 	protected void configureServlets() {
 		super.configureServlets();
 		serve("/outputs*").with(GroovyOutputServlet.class);
-		serve("/versions*").with(VersionServlet.class);
 		serve("/scrollback*").with(ScrollbackServlet.class);
 
 		bind(OutputBuffer.class);

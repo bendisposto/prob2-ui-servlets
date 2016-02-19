@@ -113,20 +113,6 @@ public class MainConfiguration extends AbstractModule {
 		Option port = OptionBuilder.withArgName("port").hasArg()
 				.withDescription("Set specific port for UI").create("port");
 
-		Option upgrade = OptionBuilder
-				.hasOptionalArg()
-				.withArgName("version")
-				.withDescription(
-						"upgrade the ProB binaries. Optionally specify the desired version.")
-				.create("upgrade");
-
-		Option upgrade2 = OptionBuilder
-				.hasOptionalArg()
-				.withArgName("version")
-				.withDescription(
-						"upgrade the ProB binaries before starting the shell. Optionally specify the desired version.")
-				.create("cli");
-
 		// TODO: add modelchecking option
 		// Option modelcheck = new Option("mc", "modelcheck", false,
 		// "start ProB model checking");
@@ -134,13 +120,11 @@ public class MainConfiguration extends AbstractModule {
 		mode.setRequired(true);
 		// mode.addOption(modelcheck);
 		mode.addOption(shell);
-		mode.addOption(upgrade);
 		options.addOptionGroup(mode);
 		options.addOption(browser);
 		options.addOption(port);
 		options.addOption(restricted);
 		options.addOption(standalone);
-		options.addOption(upgrade2);
 		options.addOption(animation);
 		options.addOption(maxCacheSize);
 		return options;
