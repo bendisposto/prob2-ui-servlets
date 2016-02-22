@@ -18,6 +18,7 @@ import com.google.inject.Injector;
 import com.google.inject.Stage;
 
 import de.prob.scripting.FileHandler;
+import de.prob.scripting.Installer;
 import de.prob.webconsole.WebConsole;
 
 /**
@@ -160,11 +161,14 @@ public class Main {
 	 *
 	 * @return if System Property "prob.home" is defined, the path to this
 	 *         directory is returned. Otherwise, the directory specified by
-	 *         System Property "user.home" is chosen, and the directory ".prob"
-	 *         is appended to it.
+	 *         {@link Installer#DEFAULT_HOME} is used.
 	 */
 	public static String getProBDirectory() {
-		return de.prob.Main.getProBDirectory();
+		String homedir = System.getProperty("prob.home");
+		if (homedir != null) {
+			return homedir + separator;
+		}
+		return Installer.DEFAULT_HOME;
 	}
 
 	public static Map<String, String> getGlobalPreferences(
