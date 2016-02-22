@@ -16,7 +16,7 @@ import de.prob.scripting.ScriptEngineProvider
 @Singleton
 class TestRunner {
 	def ScriptEngine executor
-	def RunListener listener
+	def ProBTestListener listener
 
 	@Inject
 	def TestRunner(ProBTestListener listener) {
@@ -27,16 +27,25 @@ class TestRunner {
 	def Result runTests(pathToDir) {
 		def tests = []
 		new File(pathToDir).eachFile(FileType.FILES, {
-			if (it.getName().endsWith(".groovy")) tests << it.getText()
+			if (it.getName().endsWith(".groovy")) {
+				tests << it
+			}
 		})
 		def classes = []
-		tests.each {
-			def clazz = getTestClass(it)
-			if(clazz) {
+		def errors = [:]
+		tests.each { File f ->
+			def clazz = getTestClass(f)
+			if(clazz instanceof Throwable) {
+				errors[f.getName()] = clazz
+			} else {
 				classes << clazz.getClass()
 			}
 		}
-		doRun(classes as Class<?>[])
+		def result = doRun(classes as Class<?>[])
+		errors.each { name, error ->
+			listener.testRunError(name, error)
+		}
+		result
 	}
 
 
@@ -47,12 +56,12 @@ class TestRunner {
 		return result;
 	}
 
-	def getTestClass(final String test) {
+	def getTestClass(final File test) {
 		def clazz = ""
 		try {
-			clazz = executor.eval(test)
+			clazz = executor.eval(test.getText())
 		} catch (Throwable e) {
-			e.printStackTrace() // won't happen in regular mode
+			return e
 		}
 		return clazz
 	}

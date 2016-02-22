@@ -24,11 +24,18 @@ import de.prob.web.views.BUnit;
 public class ProBTestListener extends RunListener {
 
 	private final BUnit view;
+	private int counter = 0;
 	Map<String, String> uuidMapping = new HashMap<String, String>();
 
 	@Inject
 	public ProBTestListener(final BUnit view) {
 		this.view = view;
+	}
+
+	public void testRunError(final String scriptName, Throwable error) {
+		String scriptid = "RunError" + counter++;
+		view.testRunError(scriptid, scriptName,
+				generateTraceMessage(error.getMessage(), error));
 	}
 
 	Logger logger = LoggerFactory.getLogger(ProBTestListener.class);
@@ -37,6 +44,7 @@ public class ProBTestListener extends RunListener {
 	public void testRunStarted(final Description description) throws Exception {
 		uuidMapping.clear();
 		view.reset();
+		counter = 0;
 	}
 
 	@Override
@@ -150,7 +158,7 @@ public class ProBTestListener extends RunListener {
 	 * error occured. {@link AssertionFailedError}s and {@link AssertionError}s
 	 * are thrown when a JUnit test fails and {@link SpockComparisonFailure}s
 	 * are thrown when Spock tests fail
-	 * 
+	 *
 	 * @param f
 	 *            {@link Failure} produced by {@link JUnitCore}
 	 * @return if the {@link Failure} corresponds to an actual failure of the

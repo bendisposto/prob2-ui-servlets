@@ -69,6 +69,12 @@ public class BUnit extends AbstractSession {
 				- failCount, "total", runCount, "ignored", ignoreCount));
 	}
 
+	public void testRunError(final String scriptid, final String scriptName,
+			String errorMessage) {
+		submit(WebUtils.wrap("cmd", "BUnit.testRunFail", "id", scriptid,
+				"scriptName", scriptName, "reason", errorMessage));
+	}
+
 	@Override
 	public void reload(final String client, final int lastinfo,
 			final AsyncContext context) {

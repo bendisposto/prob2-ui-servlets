@@ -1,7 +1,7 @@
 BUnit = (function() {
     var extern = {}
     var session = Session()
-    
+
     $(document).ready(function() {
     });
 
@@ -45,8 +45,8 @@ BUnit = (function() {
         $("#"+id).click(function(e) {
             $("#errors").removeClass("invisible")
             $("#errors").empty()
-            $("#errors").html(reason)           
-        }) 
+            $("#errors").html(reason)
+        })
     }
 
     function testError(id, reason) {
@@ -54,11 +54,17 @@ BUnit = (function() {
         $("#"+id).click(function(e) {
             $("#errors").removeClass("invisible")
             $("#errors").empty()
-            $("#errors").html(reason)           
-        })        
+            $("#errors").html(reason)
+        })
     }
 
-
+    function testRunFail(id, scriptName, reason) {
+        addSuite({name: id})
+        suiteFail(id)
+        var testId = id+"-test"
+        addTest(id, {id: testId, name: scriptName})
+        testFail(testId, reason)
+    }
 
     extern.clearInput = clearInput
 
@@ -77,8 +83,11 @@ BUnit = (function() {
         testFail(data.test, data.reason)
     }
     extern.testError = function(data) {
-    	suiteError(data.suite)
-        testError(data.test, data.reason)
+    	   suiteError(data.suite)
+         testError(data.test, data.reason)
+    }
+    extern.testRunFail = function(data) {
+        testRunFail(data.id, data.scriptName, data.reason)
     }
     extern.setStats = setStats
 
