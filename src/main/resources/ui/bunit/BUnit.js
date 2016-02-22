@@ -7,6 +7,8 @@ BUnit = (function() {
 
     function clearInput() {
         $("#content").replaceWith(session.render("/ui/bunit/content.html", {}))
+        $("#errors").empty()
+        $("#errors").addClass("invisible")
     }
 
     function setStats(data) {
