@@ -26,7 +26,7 @@ import de.prob.web.AbstractSession;
 import de.prob.web.WebUtils;
 
 public class BConsole extends AbstractSession implements
-		IAnimationChangeListener {
+IAnimationChangeListener {
 
 	private final StateSpace defaultSS;
 	private String modelName;
@@ -82,9 +82,6 @@ public class BConsole extends AbstractSession implements
 	}
 
 	public String result(AbstractEvalResult res) {
-		if (res instanceof EvalResult) {
-
-		}
 		return res.toString();
 	}
 
